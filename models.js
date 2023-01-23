@@ -10,6 +10,7 @@ const MyFavouritesSchema = new mongoose.Schema( {
   }
 });
 
-const tasks = mongoose.model("Tasks", MyFavouritesSchema);
-
-module.exports = tasks;
+const tasks_model = mongoose.model("Tasks", MyFavouritesSchema);
+const groceries_model = mongoose.model("Groceries", MyFavouritesSchema)
+module.exports.tasks_model = tasks_model;
+module.exports.groceries_model = groceries_model;

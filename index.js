@@ -2,7 +2,7 @@ const express = require('express');
 const body_parser = require('body-parser');
 const cors = require('cors');
 const mongoose = require("mongoose");
-const task_model = require("./models");
+const models = require('./models');
 const private_info = require("./private_info");
 
 const app = express();
@@ -26,16 +26,16 @@ db.once("open", function(){
 app.use(body_parser.urlencoded({extended:false}));
 app.use(body_parser.json());
 
-app.get('/fetchTasks', async (request, response) => {
-  const tasks = await task_model.find({});
+app.get('/todo/fetchTasks', async (request, response) => {
+  const tasks = await models.tasks_model.find({});
   response.send(tasks);
 });
 
-app.post('/delete', async (request, response) => {
+app.post('/todo/delete', async (request, response) => {
   try{
-    task_model.deleteOne({task: request.body.task})
+    models.tasks_model.deleteOne({task: request.body.task})
     .then(async()=>{
-      const tasks = await task_model.find({});
+      const tasks = await models.tasks_model.find({});
       response.send(tasks);
     });
   } catch (ex) {
@@ -43,18 +43,51 @@ app.post('/delete', async (request, response) => {
   } 
 });
 
-app.post('/createNewTask', async (request, response) => {
+app.post('/todo/createNewTask', async (request, response) => {
+  console.log(request.body)
   try{
-    task_model.create({
+    models.tasks_model.create({
       task: request.body.task,
       date: request.body.date
     });
-    const tasks = await task_model.find({});
+    const tasks = await models.tasks_model.find({});
     response.send(tasks)
   } catch (ex) {
     console.log(ex);
   }}
   );
+
+
+  app.get('/grocery/fetchTasks', async (request, response) => {
+    const tasks = await models.groceries_model.find({});
+    response.send(tasks);
+  });
+  
+  app.post('/grocery/delete', async (request, response) => {
+    try{
+      models.groceries_model.deleteOne({grocery: request.body.task})
+      .then(async()=>{
+        const tasks = await models.groceries_model.find({});
+        response.send(tasks);
+      });
+    } catch (ex) {
+      console.log(ex);
+    } 
+  });
+  
+  app.post('/grocery/createNewTask', async (request, response) => {
+    try{
+      models.groceries_model.create({
+        task: request.body.task,
+        date: request.body.date
+      });
+      const tasks = await models.groceries_model.find({});
+      response.send(tasks)
+    } catch (ex) {
+      console.log(ex);
+    }}
+    );
+  
 
 app.listen(private_info.port, () => {
   console.log(`Task server listening on port ${private_info.port}!`);
