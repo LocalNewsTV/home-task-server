@@ -44,7 +44,6 @@ app.post('/todo/delete', async (request, response) => {
 });
 
 app.post('/todo/createNewTask', async (request, response) => {
-  console.log(request.body)
   try{
     models.tasks_model.create({
       task: request.body.task,
